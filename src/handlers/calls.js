@@ -47,7 +47,7 @@ function sendEmail(name, phone) {
 
     return transporter.sendMail({
         from: '"УралТехДеталь Бот" <utd-bot@yandex.ru>',
-        to: 'evgenymarkov@yandex.ru, ryazanskaya.irina@yandex.ru',
+        to: process.env.MAIL_RECIPIENTS,
         subject: `Заявка на звонок от ${name}`,
         text: `${name} просит Вас перезвонить по номеру ${phone}`,
     });

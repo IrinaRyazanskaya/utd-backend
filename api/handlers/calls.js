@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+const nodemailer = require('nodemailer');
 
 function orderCall(req, res) {
     const buyerName = req.body.name;
@@ -53,4 +53,4 @@ function sendEmail(name, phone) {
     });
 }
 
-export { orderCall };
+module.exports = { orderCall };

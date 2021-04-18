@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+const nodemailer = require('nodemailer');
 
 function applyRequest(req, res) {
     const buyerName = req.body.name;
@@ -9,7 +9,7 @@ function applyRequest(req, res) {
 
     if (req.file) {
         attachments.push({
-            path: req.file.path,
+            content: req.file.buffer,
             contentType: req.file.mimetype,
             filename: `Заявка от ${buyerName}.${extractFileExtension(req.file.originalname)}`
         });
@@ -92,4 +92,4 @@ function sendEmail(name, phone, email, comment, attachments) {
     });
 }
 
-export { applyRequest };
+module.exports = { applyRequest };

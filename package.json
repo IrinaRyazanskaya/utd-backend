@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "build": "tsc",
     "start": "node api/main.js",
     "format": "prettier --write ."
   },
@@ -12,7 +13,9 @@
     "nodemailer": "^7.0.0"
   },
   "devDependencies": {
+    "@tsconfig/node22": "^22.0.0",
     "@types/express": "^5.0.0",
-    "prettier": "^3.0.0"
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
   }
 }

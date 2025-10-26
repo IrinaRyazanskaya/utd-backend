@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node api/main.js"
+    "start": "node api/main.js",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "express": "^5.0.0",
@@ -11,6 +12,7 @@
     "nodemailer": "^7.0.0"
   },
   "devDependencies": {
-    "@types/express": "^5.0.0"
+    "@types/express": "^5.0.0",
+    "prettier": "^3.0.0"
   }
 }

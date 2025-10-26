@@ -2,7 +2,6 @@
   "include": ["src"],
   "extends": ["@tsconfig/node22"],
   "compilerOptions": {
-    "allowJs": true,
     "outDir": "./dist"
   }
 }

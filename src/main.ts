@@ -1,7 +1,6 @@
-import { app } from "./index.js";
+import { app } from "./index";
+import { HTTP_PORT } from "./config";
 
-const port = 3000;
-
-app.listen(port, () => {
-  console.log(`Server listening at http://localhost:${port}`);
+app.listen(HTTP_PORT, () => {
+  console.log(`Server listening at http://localhost:${HTTP_PORT}`);
 });

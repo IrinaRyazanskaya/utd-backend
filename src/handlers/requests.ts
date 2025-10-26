@@ -4,6 +4,8 @@ import type { SentMessageInfo } from "nodemailer";
 import type { Request, Response } from "express";
 import type { ParsedQs } from "qs";
 
+import { mailConfig } from "../config";
+
 type ApplyRequestBody = {
   name: unknown;
   phone: unknown;
@@ -119,18 +121,18 @@ function sendEmail(
   attachments: Attachment[],
 ): Promise<SentMessageInfo> {
   const transporter = nodemailer.createTransport({
-    host: "smtp.yandex.ru",
-    port: 465,
+    host: mailConfig.host,
+    port: mailConfig.port,
     secure: true,
     auth: {
-      user: process.env.MAIL_USER,
-      pass: process.env.MAIL_PASS,
+      user: mailConfig.username,
+      pass: mailConfig.password,
     },
   });
 
   return transporter.sendMail({
-    from: '"УралТехДеталь Бот" <utd-bot@yandex.ru>',
-    to: process.env.MAIL_RECIPIENTS,
+    from: mailConfig.sender,
+    to: mailConfig.recipients,
     subject: `Заявка от ${name}`,
     text: formatEmailText(name, phone, email, comment),
     attachments,

@@ -1,9 +1,9 @@
 import type { Request, Response } from "express";
 
-import { sendMail } from "../utils/emails";
-import type { Attachment } from "../utils/emails";
-import { extractFileExtension } from "../utils/files";
-import { isNonEmptyString } from "../utils/strings";
+import { sendMail } from "../utils/emails.js";
+import type { Attachment } from "../utils/emails.js";
+import { extractFileExtension } from "../utils/files.js";
+import { isNonEmptyString } from "../utils/strings.js";
 
 type ApplyRequestBody = {
   name: unknown;
@@ -61,9 +61,9 @@ async function applyRequest(request: Request, response: Response): Promise<void>
   const attachments: Attachment[] = request.file
     ? [
         {
+          filename: `Заявка от ${buyerName}.${extractFileExtension(request.file.originalname)}`,
           content: request.file.buffer,
           contentType: request.file.mimetype,
-          filename: `Заявка от ${buyerName}.${extractFileExtension(request.file.originalname)}`,
         },
       ]
     : [];

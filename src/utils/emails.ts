@@ -1,16 +1,19 @@
 import nodemailer from "nodemailer";
-import type Mail from "nodemailer/lib/mailer";
 import type { SentMessageInfo } from "nodemailer";
 
-import { mailConfig } from "../config";
+import { mailConfig } from "../config.js";
+
+type Attachment = {
+  filename: string;
+  content: Buffer;
+  contentType: string;
+};
 
 type SendMailPayload = {
   subject: string;
   text: string;
-  attachments?: Mail.Attachment[];
+  attachments?: Attachment[];
 };
-
-type Attachment = Mail.Attachment;
 
 const transporter = nodemailer.createTransport({
   host: mailConfig.host,

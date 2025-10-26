@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 
-import { sendMail } from "../utils/emails";
-import { isNonEmptyString } from "../utils/strings";
+import { sendMail } from "../utils/emails.js";
+import { isNonEmptyString } from "../utils/strings.js";
 
 type OrderCallRequestBody = {
   name: unknown;

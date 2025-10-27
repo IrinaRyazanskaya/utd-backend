@@ -1,6 +1,6 @@
+import type { Transporter } from "nodemailer";
 import type { Request, Response } from "express";
 
-import { sendMail } from "../utils/emails.js";
 import { isNonEmptyString } from "../utils/strings.js";
 
 type OrderCallRequestBody = {
@@ -17,42 +17,44 @@ type OrderCallValidationErrors = {
   };
 };
 
-async function orderCall(request: Request, response: Response): Promise<void> {
-  const { name, phone } = request.body as OrderCallRequestBody;
+function createOrderCallHandler(mailTransporter: Transporter) {
+  return async function orderCall(request: Request, response: Response): Promise<void> {
+    const { name, phone } = request.body as OrderCallRequestBody;
 
-  const validationErrors: OrderCallValidationErrors = {};
+    const validationErrors: OrderCallValidationErrors = {};
 
-  const buyerName = isNonEmptyString(name) ? name : null;
-  if (buyerName === null) {
-    validationErrors.name = {
-      message: 'Пожалуйста, заполните поле "Имя"',
-    };
-  }
+    const buyerName = isNonEmptyString(name) ? name : null;
+    if (buyerName === null) {
+      validationErrors.name = {
+        message: 'Пожалуйста, заполните поле "Имя"',
+      };
+    }
 
-  const buyerPhone = isNonEmptyString(phone) ? phone : null;
-  if (buyerPhone === null) {
-    validationErrors.phone = {
-      message: 'Пожалуйста, заполните поле "Телефон"',
-    };
-  }
+    const buyerPhone = isNonEmptyString(phone) ? phone : null;
+    if (buyerPhone === null) {
+      validationErrors.phone = {
+        message: 'Пожалуйста, заполните поле "Телефон"',
+      };
+    }
 
-  if (buyerName === null || buyerPhone === null) {
-    response.status(400).json(validationErrors);
+    if (buyerName === null || buyerPhone === null) {
+      response.status(400).json(validationErrors);
 
-    return;
-  }
+      return;
+    }
 
-  try {
-    await sendMail({
-      subject: `Заявка на звонок от ${buyerName}`,
-      text: `${buyerName} просит Вас перезвонить по номеру ${buyerPhone}`,
-    });
+    try {
+      await mailTransporter.sendMail({
+        subject: `Заявка на звонок от ${buyerName}`,
+        text: `${buyerName} просит Вас перезвонить по номеру ${buyerPhone}`,
+      });
 
-    response.sendStatus(200);
-  } catch (error) {
-    console.error(error);
-    response.sendStatus(500);
-  }
+      response.sendStatus(200);
+    } catch (error) {
+      console.error(error);
+      response.sendStatus(500);
+    }
+  };
 }
 
-export { orderCall };
+export { createOrderCallHandler };

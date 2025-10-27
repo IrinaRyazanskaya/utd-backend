@@ -1,8 +1,23 @@
-import { createApp } from "./app.js";
-import { serverConfig } from "./config.js";
+import nodemailer from "nodemailer";
 
-const app = createApp();
+import { createApplication } from "./application.js";
+import { apiConfig, mailConfig, serverConfig } from "./config.js";
 
-app.listen(serverConfig.port, () => {
+const mailTransporter = nodemailer.createTransport({
+  host: mailConfig.host,
+  port: mailConfig.port,
+  secure: true,
+  auth: {
+    user: mailConfig.username,
+    pass: mailConfig.password,
+  },
+});
+
+const application = createApplication({
+  authToken: apiConfig.token,
+  mailTransporter,
+});
+
+application.listen(serverConfig.port, () => {
   console.log(`Server listening at http://localhost:${serverConfig.port}`);
 });

@@ -1,7 +1,6 @@
+import type { Transporter } from "nodemailer";
 import type { Request, Response } from "express";
 
-import { sendMail } from "../utils/emails.js";
-import type { Attachment } from "../utils/emails.js";
 import { extractFileExtension } from "../utils/files.js";
 import { isNonEmptyString } from "../utils/strings.js";
 
@@ -24,62 +23,62 @@ type ApplyRequestValidationErrors = {
   };
 };
 
-async function applyRequest(request: Request, response: Response): Promise<void> {
-  const { name, phone, email, comment: rawComment } = request.body as ApplyRequestBody;
+function createApplyRequestHandler(mailTransporter: Transporter) {
+  return async function applyRequest(request: Request, response: Response): Promise<void> {
+    const { name, phone, email, comment: rawComment } = request.body as ApplyRequestBody;
 
-  const validationErrors: ApplyRequestValidationErrors = {};
+    const validationErrors: ApplyRequestValidationErrors = {};
 
-  const buyerName = isNonEmptyString(name) ? name : null;
-  if (buyerName === null) {
-    validationErrors.name = {
-      message: 'Пожалуйста, заполните поле "Имя"',
-    };
-  }
+    const buyerName = isNonEmptyString(name) ? name : null;
+    if (buyerName === null) {
+      validationErrors.name = {
+        message: 'Пожалуйста, заполните поле "Имя"',
+      };
+    }
 
-  const buyerPhone = isNonEmptyString(phone) ? phone : null;
-  if (buyerPhone === null) {
-    validationErrors.phone = {
-      message: 'Пожалуйста, заполните поле "Телефон"',
-    };
-  }
+    const buyerPhone = isNonEmptyString(phone) ? phone : null;
+    if (buyerPhone === null) {
+      validationErrors.phone = {
+        message: 'Пожалуйста, заполните поле "Телефон"',
+      };
+    }
 
-  const buyerEmail = isNonEmptyString(email) ? email : null;
-  if (buyerEmail === null) {
-    validationErrors.email = {
-      message: 'Пожалуйста, заполните поле "E-mail"',
-    };
-  }
+    const buyerEmail = isNonEmptyString(email) ? email : null;
+    if (buyerEmail === null) {
+      validationErrors.email = {
+        message: 'Пожалуйста, заполните поле "E-mail"',
+      };
+    }
 
-  if (buyerName === null || buyerPhone === null || buyerEmail === null) {
-    response.status(400).json(validationErrors);
+    if (buyerName === null || buyerPhone === null || buyerEmail === null) {
+      response.status(400).json(validationErrors);
 
-    return;
-  }
+      return;
+    }
 
-  const buyerComment = isNonEmptyString(rawComment) ? rawComment : undefined;
+    const buyerComment = isNonEmptyString(rawComment) ? rawComment : undefined;
 
-  const attachments: Attachment[] = request.file
-    ? [
-        {
-          filename: `Заявка от ${buyerName}.${extractFileExtension(request.file.originalname)}`,
-          content: request.file.buffer,
-          contentType: request.file.mimetype,
-        },
-      ]
-    : [];
+    try {
+      await mailTransporter.sendMail({
+        subject: `Заявка от ${buyerName}`,
+        text: formatEmailText(buyerName, buyerPhone, buyerEmail, buyerComment),
+        attachments: request.file
+          ? [
+              {
+                filename: `Заявка от ${buyerName}.${extractFileExtension(request.file.originalname)}`,
+                content: request.file.buffer,
+                contentType: request.file.mimetype,
+              },
+            ]
+          : undefined,
+      });
 
-  try {
-    await sendMail({
-      subject: `Заявка от ${buyerName}`,
-      text: formatEmailText(buyerName, buyerPhone, buyerEmail, buyerComment),
-      attachments: attachments.length > 0 ? attachments : undefined,
-    });
-
-    response.sendStatus(200);
-  } catch (error) {
-    console.error(error);
-    response.sendStatus(500);
-  }
+      response.sendStatus(200);
+    } catch (error) {
+      console.error(error);
+      response.sendStatus(500);
+    }
+  };
 }
 
 function formatEmailText(name: string, phone: string, email: string, comment?: string): string {
@@ -96,4 +95,4 @@ function formatEmailText(name: string, phone: string, email: string, comment?: s
   return emailText.join("\n");
 }
 
-export { applyRequest };
+export { createApplyRequestHandler };

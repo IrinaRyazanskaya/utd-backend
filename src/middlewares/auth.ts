@@ -1,16 +1,16 @@
 import type { NextFunction, Request, Response } from "express";
 
-import { apiConfig } from "../config.js";
+function createVerifyAuthToken(authToken: string) {
+  return function verifyAuthToken(request: Request, response: Response, next: NextFunction): void {
+    const token = request.get("x-auth-token");
 
-function verifyAuthToken(request: Request, response: Response, next: NextFunction): void {
-  const token = request.get("x-auth-token");
+    if (token !== authToken) {
+      response.sendStatus(401);
+      return;
+    }
 
-  if (token !== apiConfig.token) {
-    response.sendStatus(401);
-    return;
-  }
-
-  next();
+    next();
+  };
 }
 
-export { verifyAuthToken };
+export { createVerifyAuthToken };

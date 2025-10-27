@@ -4,6 +4,10 @@ import type { Request, Response } from "express";
 import { extractFileExtension } from "../utils/files.js";
 import { isNonEmptyString } from "../utils/strings.js";
 
+type ApplyRequestOptions = {
+  mailTransporter: Transporter;
+};
+
 type ApplyRequestBody = {
   name: unknown;
   phone: unknown;
@@ -23,7 +27,7 @@ type ApplyRequestValidationErrors = {
   };
 };
 
-function createApplyRequestHandler(mailTransporter: Transporter) {
+function createApplyRequestHandler({ mailTransporter }: ApplyRequestOptions) {
   return async function applyRequest(request: Request, response: Response): Promise<void> {
     const { name, phone, email, comment: rawComment } = request.body as ApplyRequestBody;
 
@@ -96,3 +100,4 @@ function formatEmailText(name: string, phone: string, email: string, comment?: s
 }
 
 export { createApplyRequestHandler };
+export type { ApplyRequestOptions };

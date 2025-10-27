@@ -6,27 +6,34 @@ import { createOrderCallHandler } from "./handlers/calls.js";
 import { createApplyRequestHandler } from "./handlers/requests.js";
 import { createVerifyAuthToken } from "./middlewares/auth.js";
 
-type ApplicationDependencies = {
+type ApplicationOptions = {
   authToken: string;
   mailTransporter: Transporter;
 };
 
-function createApplication({ authToken, mailTransporter }: ApplicationDependencies) {
+function createApplication({ authToken, mailTransporter }: ApplicationOptions) {
   const application = express();
   const upload = multer({ storage: multer.memoryStorage() });
 
   application.use(express.json());
-  application.use(createVerifyAuthToken(authToken));
+  application.use(createVerifyAuthToken({ authToken }));
 
-  application.post("/api/calls", createOrderCallHandler(mailTransporter));
-
+  application.post(
+    "/api/calls",
+    createOrderCallHandler({
+      mailTransporter,
+    }),
+  );
   application.post(
     "/api/requests",
     upload.single("order"),
-    createApplyRequestHandler(mailTransporter),
+    createApplyRequestHandler({
+      mailTransporter,
+    }),
   );
 
   return application;
 }
 
 export { createApplication };
+export type { ApplicationOptions };

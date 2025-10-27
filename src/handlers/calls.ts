@@ -3,6 +3,10 @@ import type { Request, Response } from "express";
 
 import { isNonEmptyString } from "../utils/strings.js";
 
+type OrderCallOptions = {
+  mailTransporter: Transporter;
+};
+
 type OrderCallRequestBody = {
   name: unknown;
   phone: unknown;
@@ -17,7 +21,7 @@ type OrderCallValidationErrors = {
   };
 };
 
-function createOrderCallHandler(mailTransporter: Transporter) {
+function createOrderCallHandler({ mailTransporter }: OrderCallOptions) {
   return async function orderCall(request: Request, response: Response): Promise<void> {
     const { name, phone } = request.body as OrderCallRequestBody;
 
@@ -58,3 +62,4 @@ function createOrderCallHandler(mailTransporter: Transporter) {
 }
 
 export { createOrderCallHandler };
+export type { OrderCallOptions };

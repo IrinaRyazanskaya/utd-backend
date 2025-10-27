@@ -1,6 +1,10 @@
 import type { NextFunction, Request, Response } from "express";
 
-function createVerifyAuthToken(authToken: string) {
+type VerifyAuthTokenOptions = {
+  authToken: string;
+};
+
+function createVerifyAuthToken({ authToken }: VerifyAuthTokenOptions) {
   return function verifyAuthToken(request: Request, response: Response, next: NextFunction): void {
     const token = request.get("x-auth-token");
 
@@ -14,3 +18,4 @@ function createVerifyAuthToken(authToken: string) {
 }
 
 export { createVerifyAuthToken };
+export type { VerifyAuthTokenOptions };

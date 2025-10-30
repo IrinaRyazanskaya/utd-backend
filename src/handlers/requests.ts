@@ -79,8 +79,15 @@ function createApplyRequestHandler({ mailTransporter }: ApplyRequestOptions) {
 
       response.sendStatus(200);
     } catch (error) {
-      console.error(error);
-      response.sendStatus(500);
+      let errorText: string;
+
+      if (error instanceof Error) {
+        errorText = error.message;
+      } else {
+        errorText = "Произошла ошибка при отправке e-mail";
+      }
+
+      response.status(500).json({ error: errorText });
     }
   };
 }

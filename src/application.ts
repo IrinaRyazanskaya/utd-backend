@@ -3,6 +3,7 @@ import express from "express";
 import type { Transporter } from "nodemailer";
 
 import { createOrderCallHandler } from "./handlers/calls.js";
+import { createPingHandler } from "./handlers/ping.js";
 import { createApplyRequestHandler } from "./handlers/requests.js";
 import { createVerifyAuthToken } from "./middlewares/auth.js";
 
@@ -13,20 +14,24 @@ type ApplicationOptions = {
 
 function createApplication({ authToken, mailTransporter }: ApplicationOptions) {
   const application = express();
-  const upload = multer({ storage: multer.memoryStorage() });
-
   application.use(express.json());
-  application.use(createVerifyAuthToken({ authToken }));
+
+  application.get("/api/ping", createPingHandler());
+
+  const authTokenMiddleware = createVerifyAuthToken({ authToken });
+  const uploadOrderMiddleware = multer({ storage: multer.memoryStorage() });
 
   application.post(
     "/api/calls",
+    authTokenMiddleware,
     createOrderCallHandler({
       mailTransporter,
     }),
   );
   application.post(
     "/api/requests",
-    upload.single("order"),
+    authTokenMiddleware,
+    uploadOrderMiddleware.single("order"),
     createApplyRequestHandler({
       mailTransporter,
     }),

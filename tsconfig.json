@@ -2,6 +2,19 @@
   "include": ["src"],
   "extends": ["@tsconfig/node22"],
   "compilerOptions": {
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "strict": true,
+    "noUnusedLocals": true,
+    "allowUnusedLabels": false,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "verbatimModuleSyntax": true,
+    "allowUnreachableCode": false,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    "noPropertyAccessFromIndexSignature": true
   }
 }

@@ -5,13 +5,15 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
+    "build-check": "tsc --noEmit",
     "start": "node dist/main.js",
     "format": "prettier --write .",
+    "format-check": "prettier --check .",
     "lint": "eslint .",
     "lint-fix": "eslint --fix .",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test-watch": "vitest",
+    "test-coverage": "vitest run --coverage"
   },
   "dependencies": {
     "express": "^5.0.0",

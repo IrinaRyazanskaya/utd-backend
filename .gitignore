@@ -1,3 +1,8 @@
-.vercel/
-.vscode/
+# Artifacts
+dist/
+
+# Testing
+coverage/
+
+# Dependencies
 node_modules/

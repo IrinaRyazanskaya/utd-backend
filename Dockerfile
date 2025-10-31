@@ -19,5 +19,4 @@ RUN npm ci --omit=dev
 
 COPY --from=builder /app/dist ./dist
 
-EXPOSE 3000
 CMD ["node", "dist/main.js"]

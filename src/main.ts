@@ -12,6 +12,8 @@ const mailTransporter = nodemailer.createTransport({
     user: mailConfig.username,
     pass: mailConfig.password,
   },
+  from: mailConfig.sender,
+  to: mailConfig.recipients,
 });
 
 const application = createApplication({

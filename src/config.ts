@@ -12,7 +12,7 @@ const mailConfig = {
 } as const;
 
 const serverConfig = {
-  port: Number(process.env["SERVER_PORT"]) || 3000,
+  port: Number(process.env["SERVER_PORT"]) || Number(process.env["PORT"]) || 3000,
 } as const;
 
 export { apiConfig, mailConfig, serverConfig };

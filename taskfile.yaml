@@ -1,0 +1,14 @@
+version: "3"
+
+vars:
+  COMMIT_HASH:
+    sh: git rev-parse --short HEAD
+  APP_VERSION: "{{.COMMIT_HASH}}"
+  DOCKER_IMAGE: cr.yandex/crp4javlgtod0hm1kcho/utd-backend
+
+tasks:
+  docker-build:
+    cmd: docker build --tag {{.DOCKER_IMAGE}}:{{.APP_VERSION}} .
+
+  docker-upload:
+    cmd: docker push {{.DOCKER_IMAGE}}:{{.APP_VERSION}}
